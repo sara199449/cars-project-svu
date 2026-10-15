@@ -293,7 +293,9 @@ ul {
 .hero .container .hero-title {
     text-align: center;
     text-shadow: 1px 1px 1px black;
-    width: 700px;
+    /* width: 700px; */
+ width: 100%;
+ max-width: 700px;
 }
 
 .hero .container .hero-title .h1-h1-h1 {
@@ -679,6 +681,11 @@ ul {
         inset 0 -1px 0 rgba(240, 218, 123, 0.1),
         inset 0 0 12px 6px rgba(247, 218, 125, 0.6);
 }
+@media(max-width:768px) {
+    .section-calls .call-title {
+        width: 100%;
+    }
+ }
 
 @media(min-width:768px) and (max-width:991px) {
     .section-calls .call-title {
@@ -752,6 +759,7 @@ ul {
 @media(max-width:768px) {
     .section-calls .call-title .title p {
         font-size: 14px;
+      
 
     }
 }
@@ -967,7 +975,18 @@ input[name="car-select"] {
     letter-spacing: 0.3px;
 }
 
+.continue-container {
+    display: flex;
+    justify-content: space-around;
+}
+@media(max-width:768px) {
+    .continue-container {
+        flex-direction: column;
+        align-items: center;
+    
 
+    }
+}
 
 .continue-btn {
     background-color: var(--secondaryColor);
@@ -1019,11 +1038,16 @@ input[name="car-select"] {
 
 
 
-.continue-container {
-    display: flex;
-    justify-content: space-around;
-}
+
 @media(max-width:768px) {
+    .table {
+        margin: 10px;
+    }
+        .table .details-content,
+    .table .details-content * {
+        padding: 10px;
+    }
+
    .table thead {
 display: none;
     }
@@ -1043,7 +1067,7 @@ display: none;
 .table tbody tr:not(.details-row) td {
    display: flex;
    justify-content: center;
-  
+
    border: none;
    padding: 5px;
    border-bottom:1px dashed rgba(255, 217, 0, 0.315);
