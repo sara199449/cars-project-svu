@@ -1048,58 +1048,89 @@ input[name="car-select"] {
 
 
 @media(max-width:768px) {
+
     .table {
         margin: 10px;
     }
-        .table .details-content,
-    .table .details-content * {
-        padding: 10px;
+
+    /* الجدول وأجزاؤه كلها بلوكات، حتى Safari ما يعمل خلايا وهمية جنب بعض */
+    .project-table,
+    .project-table tbody,
+    .table tbody {
+        display: block;
+        width: 100%;
     }
 
-   .table thead {
-display: none;
+    .table thead {
+        display: none;
     }
 
-   .table tbody tr:not(.details-row) {
-    display: block;
-    width: 100%;
-    border-bottom: 1px solid var(--secondaryColor);
-    box-shadow: 0 4px 5px rgba(255, 217, 0, 0.336);
-    border-radius: 0;
-    margin-top: 25px;
-   
-    
-    
+    .table tbody tr:not(.details-row) {
+        display: block;
+        width: 100%;
+        border-bottom: 1px solid var(--secondaryColor);
+        box-shadow: 0 4px 5px rgba(255, 217, 0, 0.336);
+        border-radius: 0;
+        margin-top: 25px;
+    }
 
-}
-.table tbody tr:not(.details-row) td {
-   display: flex;
-   justify-content: center;
+    .table tbody tr:not(.details-row) td {
+        display: flex;
+        justify-content: center;
+        border: none;
+        padding: 5px;
+        border-bottom: 1px dashed rgba(255, 217, 0, 0.315);
+        border-radius: 0;
+    }
 
-   border: none;
-   padding: 5px;
-   border-bottom:1px dashed rgba(255, 217, 0, 0.315);
-   border-radius: 0;
-   
-}
-.details-content  {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;  
-       margin-bottom: 25px;
+    /* صف التفاصيل: مخفي افتراضياً، وبيظهر بس لما jQuery يعطيه display */
+    .project-table .details-row[style*="table-row"],
+    .project-table .details-row[style*="block"] {
+        display: block !important;
+        width: 100%;
+    }
 
-}
+    .project-table .details-row td {
+        display: block;
+        width: 100%;
+        padding: 0;
+        border: none;
+    }
 
-.details-content .car-img {
-    width: 80% !important;
-    
+    .details-content {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        max-width: 100%;
+        margin-bottom: 25px;
+        padding: 12px;
+    }
+
+    .details-content > * {
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    .details-content .car-img,
+    .details-content img.car-img {
+        width: 100% !important;
+        max-width: 100% !important;
+        height: auto !important;
+    }
+
+    .details-content span {
+        font-size: 16px !important;
+        text-align: center;
+        overflow-wrap: anywhere;
+        word-break: break-word;
+    }
+
+    html, body {
+        overflow-x: hidden;
+    }
 }
-.details-content span {
-    font-size: 16px !important;
-    text-align: center;
-}
-} 
 /* Cars Selection Table Ends */
 
 
