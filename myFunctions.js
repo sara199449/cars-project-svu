@@ -1,150 +1,261 @@
-/*
-============================================================================
-                 Project: Premium Car Rental Application
-                        File: myfunctions.js
-Description: Interactive logic for car selectin and booking form validation.
-============================================================================
+<!DOCTYPE html>
 
- */
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ar" dir="rtl">
 
-// NAVBAR
-let icon = document.getElementById("icon-mobile");
-let ul = document.getElementById("ul-mobile");
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CarRentalProject</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+          integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
+  
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
 
+<body>
 
-icon.onclick = function () {
-    ul.classList.toggle("mobile-nav1");
-}
+                                     <!-- Header -->
+    <div id="header">
+        <div class="container">
+            <a class="logo" href="home.html">
+                <img src="images/logo/logo.png"  alt="تأجير سيارات" />
+            </a>
+            <div id="nav">
+                <i id="icon-mobile" class="fa-solid fa-bars nav-tog"></i>
+                <ul id="ul-mobile">
+                    <li><a href="home.html">الرئيسية</a></li>
+                    <li><a class="active" href="AboutUs.html">من نحن </a></li>
+                    <li><a href="Cars.html"> السيارات</a></li>
 
+                </ul>
+            </div>
 
- document.addEventListener("DOMContentLoaded", function() {
-     let icon = document.getElementById("icon-mobile");
-     let ul = document.getElementById("ul-mobile");
+            <div class="social">
+                <i class="fa-brands fa-facebook"></i>
+                <i class="fa-brands fa-instagram"></i>
+                <i class="fa-brands fa-youtube"></i>
+                <i class="fa-brands fa-whatsapp"></i>
+                <i class="fa-brands fa-linkedin"></i>
 
-     icon.onclick = function() {
-         ul.classList.toggle("mobile-nav1");
-     }
- });
-
-
-
-
-
-
-// TABLE 
-
-$(document).ready(function () {
-
-    $('.toggle-details').on('change', function () {
-        let targetId = '#' + $(this).data('target');
-        if ($(this).is(':checked')) {
-            $(targetId).css('display', 'table-row').hide().fadeIn(200);
-        } else {
-            $(targetId).fadeOut(200);
-        }
-    });
-
-    $('#continue-btn').on('click', function (e) {
-        e.preventDefault();
-
-        let selectedCount = $('input[name="car-select"]:checked').length;
-
-        if (selectedCount === 0) {
-            alert('الرجاء تحديد سيارة واحدة على الاقل للمتابعة');
-            return;
-        }
-
-        $('#booking-section').slideDown(400);
-        $('html, body').animate({
-            scrollTop: $('#booking-section').offset().top
-        }, 500);
-    });
-
-    $('#car-rental-form').on('submit', function (e) {
-        e.preventDefault();
-        let isValid = true;
-
-        let nameVal = $('#full-name').val().trim();
-        let arabicNameRegex = /^[\u0600-\u06FF\s]+$/;
-        if (nameVal !== "" && !arabicNameRegex.test(nameVal)) {
-            $('#name-error').show();
-            isValid = false;
-        } else {
-            $('#name-error').hide();
-        }
-
-        let nidVal = $('#national-id').val().trim();
-        let nidRegex = /^(0[1-9]|1[0-4])\d{9}$/;
-        if (nidVal === "" || !nidRegex.test(nidVal)) {
-            $('#nid-error').show();
-            isValid = false;
-        } else {
-            $('#nid-error').hide();
-        }
-
-        let startDateVal = $('#start-date').val();
-        let endDateVal = $('#end-date').val();
-        let startDate, endDate; // تعريف المتغيرات في النطاق الخارجي لتكون مرئية للجميع
-
-        if (!startDateVal || !endDateVal) {
-            $('#date-error').text('يرجى إدخال تاريخ البداية وتاريخ النهاية.').show();
-            isValid = false;
-        } else {
-            startDate = new Date(startDateVal);
-            endDate = new Date(endDateVal);
-
-            // فحص مقارنة التواريخ داخل الـ else لضمان توفر القيم
-            if (endDate <= startDate) {
-                $('#date-error').text('تاريخ النهاية يجب أن يكون لاحقاً لتاريخ البداية.').show();
-                isValid = false;
-            } else {
-                $('#date-error').hide();
-            }
-        }
-
-        if (isValid) {
-            let timeDiff = endDate.getTime() - startDate.getTime();
-            let daysCount = Math.ceil(timeDiff / (1000 * 3600 * 24));
-
-            let summaryText = "تم تأكيد الحجز بنجاح\n\nتفاصيل الحجز\n";
-            let totalGeneralPrice = 0;
-
-            $('input[name="car-select"]:checked').each(function () {
-                let row = $(this).closest('tr');
-
-                let carModel = row.find('td').eq(1).text().trim();
-                let priceText = row.find('td').eq(3).text().trim();
-                let dailyPrice = parseFloat(priceText.replace('$', '')) || 0;
-
-                let carTotalPrice = dailyPrice * daysCount;
-                totalGeneralPrice += carTotalPrice;
-
-                summaryText += `- سيارة: ${carModel} | ايام: ${daysCount} ايام | اجمالي السعر: ${carTotalPrice}$\n`;
-            });
-
-            let discountAmount = 0;
-            let discountPercent = 0;
-
-            if (daysCount > 7) {
-                discountPercent = 10;
-                discountAmount = totalGeneralPrice * 0.10;
-            }
-            let finalTotal = totalGeneralPrice - discountAmount;
-
-            summaryText += `\n المجموع قبل الخصم: $${totalGeneralPrice.toFixed(2)}`;
-            if (discountPercent > 0) {
-                summaryText += `\n قيمة الخصم (${discountPercent}% لتجاوز 7 أيام): -$${discountAmount.toFixed(2)}`;
-            } else {
-                summaryText += `\n0.00$ :قيمة الخصم`;
-            }
-            summaryText += `\nالمبلغ النهائي المستحق: $${finalTotal.toFixed(2)}`;
-            alert(summaryText);
-        }
-    });
-
-});
+            </div>
+        </div>
+    </div>
+                                      <!-- Header Ends-->
 
 
+                                        <!-- About Us-->
+    <div class="section-aboutus">
+        <h1 class="section-title">من نحن؟</h1>
+        <h2 class="info-title"> PRIMIUM CARS شريكك الموثوق في تأجير السيارات </h2>
+        <div class="container">
+
+            <div class="aboutus">
+
+                <div class="aboutus-card">
+                    <h3> رؤيتنا</h3>
+                    <p>أن نكون الخيار الأول لتأجير السيارات في المنطقة، بتقديم خدمات استثنائية </p>
+                </div>
+
+                <div class="aboutus-card">
+                    <h3> رسالتنا</h3>
+                    <p>أن نقدم خدمات متميزة تجمع الجودة والفخامة، بالاتزام بأعلى معايير الاحترافيه</p>
+                </div>
+                <div class="aboutus-card">
+                    <h3> قيمنا</h3>
+                    <p>أن نلتزم بالمصداقية والشفافية، بتقديم تجربة موثوقة تحفظ ثقة عملائنا</p>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+                                      <!-- About Us Ends -->
+
+                                    <!-- Calling & Location -->
+    <div class="section-calls">
+        <div class="container   ">
+
+
+            <div class="call-title">
+                <h3 class="section-title">معلومات الاتصال</h3>
+
+                <div class="title">
+                    <div class="icon-h">
+                        <i class="fa-solid fa-phone-volume"></i>
+                        <h3>الهاتف:</h3>
+                    </div>
+
+                    <p>0115999999</p>
+                </div>
+
+                <div class="title">
+                    <div class="icon-h">
+                        <i class="fa-solid fa-mobile-vibrate"></i>
+                        <h3>الموبايل:</h3>
+                    </div>
+                    <p>0999999999</p>
+                </div>
+
+                <div class="title">
+                    <div class="icon-h">
+
+                        <i class="fa-brands fa-whatsapp"></i>
+                        <h3>واتس اب:</h3>
+                    </div>
+                    <p> 0999999999 </p>
+                </div>
+
+                <div class="title">
+                    <div class="icon-h">
+                        <i class="fa-regular fa-envelope"></i>
+                        <h3>ايميل:</h3>
+                    </div>
+                    <p>www.premium.com</p>
+                </div>
+            </div>
+
+
+            <div class="call-title">
+                <h3 class="section-title">العناوين وأوقات الدوام </h3>
+
+
+                <div class="title">
+                    <div class="icon-h">
+
+                        <i class="fa-solid fa-location-dot"></i>
+                        <h3>العنوان:</h3>
+                    </div>
+                    <p> دمشق، أبو رمانه</p>
+                </div>
+
+                <div class="title">
+                    <div class="icon-h">
+
+                        <i class="fa-solid fa-location-dot"></i>
+                        <h3>العنوان:</h3>
+                    </div>
+                    <p> دمشق، المالكي</p>
+                </div>
+
+                <div class="title">
+                    <div class="icon-h">
+                        <i class="fa-regular fa-calendar-days"></i>
+                        <h3>ايام العمل:</h3>
+                    </div>
+                    <p> يوميا عدا الجمعة </p>
+                </div>
+
+                <div class="title">
+                    <div class="icon-h">
+
+                        <i class="fa-solid fa-alarm-clock"></i>
+                        <h3>ساعات االعمل :</h3>
+                    </div>
+                    <p>من 9 صباحا حتى 10 ليلا</p>
+                </div>
 
 
 
+
+
+            </div>
+
+        </div>
+    </div>
+                            <!-- End Of Calling & Location -->
+
+
+                               <!-- Question Section -->
+    <div class="section-qu">
+        <div class="container">
+            <div class="qu">
+                <div class="info-qu">
+                    <h2>لنختر سياراتك</h2>
+                    <p>تصفح تفاصيل مجموعتنا وأختر السياره التي تناسبك</p>
+                </div>
+
+                <div class="a-qu">
+                    <a href="Cars.html">الإنتقال الى السيارات</a>
+                </div>
+            </div>
+        </div>
+    </div>
+                             <!-- Question Section Ends -->
+
+
+                                   <!-- Footer Section -->
+    <div id="footer">
+        <div class="container">
+
+            <div class="section">
+                <img src="images/logo/logo.png" alt="تأجير سيارات" />
+                <p>اكتشف عالم الفخامة مع مجموعتنا المختارة بعناية من أرقى السيارات . نوفر لك تجربة تأجير استثنائية تجمع
+                    بين الأداء العالي والرفاهية المطلقة
+
+                </p>
+            </div>
+
+
+            <div class="section">
+                <h2>الروابط المهمه </h2>
+                <ul>
+                    <li><a href="home.html">الرئيسية</a></li>
+                    <li><a href="AboutUs.html">من نحن</a></li>
+                    <li><a href="Cars.html"> السيارات</a></li>
+
+                </ul>
+            </div>
+
+            <div class="section">
+                <h2> معلومات الأتصال </h2>
+                <ul>
+                   <li>
+                       <p>واتساب :0999999999</p>
+                   </li> 
+                  <li>
+                   <p>البريد الالكتروني : www.premium.com</p>
+                  </li>
+                    <li>
+                        <p> العنوان : سوريا-دمشق -أبو رمانه</p>
+                    </li>
+                   
+                    <li>
+
+                        <p>ساعات العمل:السبت-الخميس|9:00ص -10:00م| </p>
+                    </li>
+
+                </ul>
+            </div>
+
+
+
+
+            <div class="section">
+                <h2>النشرة البريدية </h2>
+                <div class="letter">
+                    <form>
+                        <input type="text" placeholder="الرجاء ادخال الاسم" />
+                        <input type="email" placeholder="الرجال ادخال البريد" />
+                        <input type="button" value="زر ارسال البيانات" />
+                    </form>
+                </div>
+
+            </div>
+        </div>
+
+
+        <hr class="hr-footer"/>
+        <div class="copyright">
+            كافة الحقوق محفوظة لصالح شرك بريميوم كارز
+        </div>
+
+
+    </div>
+                                <!-- Footer Section Ends -->
+
+    <script src="myFunctions.js"></script>
+
+</body>
+</html>
