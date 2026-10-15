@@ -227,6 +227,14 @@ ul {
     font-family: Cairo;
 }
 
+@media(max-width:768px) {
+  .info-title {
+      
+        font-size: 15px;
+    }
+
+}
+
 /* Home Page */
 
 /* Hero & Banner Secton */
