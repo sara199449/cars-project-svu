@@ -1,261 +1,153 @@
-<!DOCTYPE html>
+/*
+============================================================================
+                 Project: Premium Car Rental Application
+                        File: myFunctions.js
+Description: Interactive logic for car selection and booking form validation.
+============================================================================
+*/
 
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ar" dir="rtl">
+$(document).ready(function () {
 
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CarRentalProject</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
-          integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
-          crossorigin="anonymous" referrerpolicy="no-referrer" />
-  
-    <link rel="stylesheet" type="text/css" href="style.css" />
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-</head>
+    //  NAVBAR 
+    // $('#icon-mobile').on('click', function () {
+    //     $('#ul-mobile').toggleClass('mobile-nav1');
+    // });
+    document.getElementById('icon-mobile').onclick = function () {
+    $('#ul-mobile').toggleClass('mobile-nav1');
+};
 
-<body>
+    //  TABLE: show / hide details 
+    $('.toggle-details').on('change', function () {
+        let targetId = '#' + $(this).data('target');
+        if ($(this).is(':checked')) {
+            $(targetId).css('display', 'table-row').hide().fadeIn(200);
+        } else {
+            $(targetId).fadeOut(200);
+        }
+    });
 
-                                     <!-- Header -->
-    <div id="header">
-        <div class="container">
-            <a class="logo" href="home.html">
-                <img src="images/logo/logo.png"  alt="تأجير سيارات" />
-            </a>
-            <div id="nav">
-                <i id="icon-mobile" class="fa-solid fa-bars nav-tog"></i>
-                <ul id="ul-mobile">
-                    <li><a href="home.html">الرئيسية</a></li>
-                    <li><a class="active" href="AboutUs.html">من نحن </a></li>
-                    <li><a href="Cars.html"> السيارات</a></li>
+    //  CONTINUE BUTTON 
+    $('#continue-btn').on('click', function (e) {
+        e.preventDefault();
 
-                </ul>
-            </div>
+        let selectedCount = $('input[name="car-select"]:checked').length;
 
-            <div class="social">
-                <i class="fa-brands fa-facebook"></i>
-                <i class="fa-brands fa-instagram"></i>
-                <i class="fa-brands fa-youtube"></i>
-                <i class="fa-brands fa-whatsapp"></i>
-                <i class="fa-brands fa-linkedin"></i>
+        if (selectedCount === 0) {
+            alert('الرجاء تحديد سيارة واحدة على الاقل للمتابعة');
+            return;
+        }
 
-            </div>
-        </div>
-    </div>
-                                      <!-- Header Ends-->
+        $('#booking-section').slideDown(400);
+        $('html, body').animate({
+            scrollTop: $('#booking-section').offset().top
+        }, 500);
+    });
 
+    // ================= FORM VALIDATION =================
+    $('#car-rental-form').on('submit', function (e) {
+        e.preventDefault();
+        let isValid = true;
 
-                                        <!-- About Us-->
-    <div class="section-aboutus">
-        <h1 class="section-title">من نحن؟</h1>
-        <h2 class="info-title"> PRIMIUM CARS شريكك الموثوق في تأجير السيارات </h2>
-        <div class="container">
+        //  الاسم: أحرف عربية فقط
+        let nameVal = $('#full-name').val().trim();
+        let arabicNameRegex = /^[\u0621-\u064A\s]+$/;
+        if (nameVal !== "" && !arabicNameRegex.test(nameVal)) {
+            $('#name-error').show();
+            isValid = false;
+        } else {
+            $('#name-error').hide();
+        }
 
-            <div class="aboutus">
+        //  الرقم الوطني
+        let nidVal = $('#national-id').val().trim();
+        let nidRegex = /^(0[1-9]|1[0-4])\d{9}$/;
+        if (nidVal === "" || !nidRegex.test(nidVal)) {
+            $('#nid-error').show();
+            isValid = false;
+        } else {
+            $('#nid-error').hide();
+        }
 
-                <div class="aboutus-card">
-                    <h3> رؤيتنا</h3>
-                    <p>أن نكون الخيار الأول لتأجير السيارات في المنطقة، بتقديم خدمات استثنائية </p>
-                </div>
+        //التواريخ  
+        let startDateVal = $('#start-date').val();
+        let endDateVal = $('#end-date').val();
+        let startDate, endDate;
 
-                <div class="aboutus-card">
-                    <h3> رسالتنا</h3>
-                    <p>أن نقدم خدمات متميزة تجمع الجودة والفخامة، بالاتزام بأعلى معايير الاحترافيه</p>
-                </div>
-                <div class="aboutus-card">
-                    <h3> قيمنا</h3>
-                    <p>أن نلتزم بالمصداقية والشفافية، بتقديم تجربة موثوقة تحفظ ثقة عملائنا</p>
-                </div>
+        if (!startDateVal || !endDateVal) {
+            $('#date-error').text('يرجى إدخال تاريخ البداية وتاريخ النهاية.').show();
+            isValid = false;
+        } else {
+            startDate = new Date(startDateVal);
+            endDate = new Date(endDateVal);
 
-            </div>
+                  // فحص مقارنة التواريخ داخل الـ else لضمان توفر القيم
+            if (endDate <= startDate) {
+                $('#date-error').text('تاريخ النهاية يجب أن يكون لاحقاً لتاريخ البداية.').show();
+                isValid = false;
+            } else {
+                $('#date-error').hide();
+            }
+        }
 
-        </div>
-    </div>
-                                      <!-- About Us Ends -->
+        //  الموبايل
+        let phoneVal = $('#phone-number').val().trim();
+        let phoneRegex = /^(093|098|099|094|095|096)\d{7}$/;
+        if (phoneVal !== "" && !phoneRegex.test(phoneVal)) {
+            $('#phone-error').show();
+            isValid = false;
+        } else {
+            $('#phone-error').hide();
+        }
 
-                                    <!-- Calling & Location -->
-    <div class="section-calls">
-        <div class="container   ">
+        //  البريد الإلكتروني
+        let emailVal = $('#email').val().trim();
+        let emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (emailVal !== "" && !emailRegex.test(emailVal)) {
+            $('#email-error').show();
+            isValid = false;
+        } else {
+            $('#email-error').hide();
+        }
 
+        //  RESULT 
+        if (isValid) {
+            let timeDiff = endDate.getTime() - startDate.getTime();
+            let daysCount = Math.ceil(timeDiff / (1000 * 3600 * 24));
 
-            <div class="call-title">
-                <h3 class="section-title">معلومات الاتصال</h3>
+            let summaryText = "تم تأكيد الحجز بنجاح\n\nتفاصيل الحجز\n";
+            let totalGeneralPrice = 0;
 
-                <div class="title">
-                    <div class="icon-h">
-                        <i class="fa-solid fa-phone-volume"></i>
-                        <h3>الهاتف:</h3>
-                    </div>
+            $('input[name="car-select"]:checked').each(function () {
+                let row = $(this).closest('tr');
 
-                    <p>0115999999</p>
-                </div>
+                let carModel = row.find('td').eq(1).text().trim();
+                let priceText = row.find('td').eq(3).text().trim();
+                let dailyPrice = parseFloat(priceText.replace('$', '')) || 0;
 
-                <div class="title">
-                    <div class="icon-h">
-                        <i class="fa-solid fa-mobile-vibrate"></i>
-                        <h3>الموبايل:</h3>
-                    </div>
-                    <p>0999999999</p>
-                </div>
+                let carTotalPrice = dailyPrice * daysCount;
+                totalGeneralPrice += carTotalPrice;
 
-                <div class="title">
-                    <div class="icon-h">
+                summaryText += `- سيارة: ${carModel} | عدد الأيام: ${daysCount} | إجمالي السعر: $${carTotalPrice}\n`;
+            });
 
-                        <i class="fa-brands fa-whatsapp"></i>
-                        <h3>واتس اب:</h3>
-                    </div>
-                    <p> 0999999999 </p>
-                </div>
+            let discountAmount = 0;
+            let discountPercent = 0;
 
-                <div class="title">
-                    <div class="icon-h">
-                        <i class="fa-regular fa-envelope"></i>
-                        <h3>ايميل:</h3>
-                    </div>
-                    <p>www.premium.com</p>
-                </div>
-            </div>
+            if (daysCount > 7) {
+                discountPercent = 10;
+                discountAmount = totalGeneralPrice * 0.10;
+            }
+            let finalTotal = totalGeneralPrice - discountAmount;
 
+            summaryText += `\nالمجموع قبل الخصم: $${totalGeneralPrice.toFixed(2)}`;
+            if (discountPercent > 0) {
+                summaryText += `\nقيمة الخصم (${discountPercent}% لتجاوز 7 أيام): -$${discountAmount.toFixed(2)}`;
+            } else {
+                summaryText += `\nقيمة الخصم: $0.00`;
+            }
+            summaryText += `\nالمبلغ النهائي المستحق: $${finalTotal.toFixed(2)}`;
+            alert(summaryText);
+        }
+    });
 
-            <div class="call-title">
-                <h3 class="section-title">العناوين وأوقات الدوام </h3>
-
-
-                <div class="title">
-                    <div class="icon-h">
-
-                        <i class="fa-solid fa-location-dot"></i>
-                        <h3>العنوان:</h3>
-                    </div>
-                    <p> دمشق، أبو رمانه</p>
-                </div>
-
-                <div class="title">
-                    <div class="icon-h">
-
-                        <i class="fa-solid fa-location-dot"></i>
-                        <h3>العنوان:</h3>
-                    </div>
-                    <p> دمشق، المالكي</p>
-                </div>
-
-                <div class="title">
-                    <div class="icon-h">
-                        <i class="fa-regular fa-calendar-days"></i>
-                        <h3>ايام العمل:</h3>
-                    </div>
-                    <p> يوميا عدا الجمعة </p>
-                </div>
-
-                <div class="title">
-                    <div class="icon-h">
-
-                        <i class="fa-solid fa-alarm-clock"></i>
-                        <h3>ساعات االعمل :</h3>
-                    </div>
-                    <p>من 9 صباحا حتى 10 ليلا</p>
-                </div>
-
-
-
-
-
-            </div>
-
-        </div>
-    </div>
-                            <!-- End Of Calling & Location -->
-
-
-                               <!-- Question Section -->
-    <div class="section-qu">
-        <div class="container">
-            <div class="qu">
-                <div class="info-qu">
-                    <h2>لنختر سياراتك</h2>
-                    <p>تصفح تفاصيل مجموعتنا وأختر السياره التي تناسبك</p>
-                </div>
-
-                <div class="a-qu">
-                    <a href="Cars.html">الإنتقال الى السيارات</a>
-                </div>
-            </div>
-        </div>
-    </div>
-                             <!-- Question Section Ends -->
-
-
-                                   <!-- Footer Section -->
-    <div id="footer">
-        <div class="container">
-
-            <div class="section">
-                <img src="images/logo/logo.png" alt="تأجير سيارات" />
-                <p>اكتشف عالم الفخامة مع مجموعتنا المختارة بعناية من أرقى السيارات . نوفر لك تجربة تأجير استثنائية تجمع
-                    بين الأداء العالي والرفاهية المطلقة
-
-                </p>
-            </div>
-
-
-            <div class="section">
-                <h2>الروابط المهمه </h2>
-                <ul>
-                    <li><a href="home.html">الرئيسية</a></li>
-                    <li><a href="AboutUs.html">من نحن</a></li>
-                    <li><a href="Cars.html"> السيارات</a></li>
-
-                </ul>
-            </div>
-
-            <div class="section">
-                <h2> معلومات الأتصال </h2>
-                <ul>
-                   <li>
-                       <p>واتساب :0999999999</p>
-                   </li> 
-                  <li>
-                   <p>البريد الالكتروني : www.premium.com</p>
-                  </li>
-                    <li>
-                        <p> العنوان : سوريا-دمشق -أبو رمانه</p>
-                    </li>
-                   
-                    <li>
-
-                        <p>ساعات العمل:السبت-الخميس|9:00ص -10:00م| </p>
-                    </li>
-
-                </ul>
-            </div>
-
-
-
-
-            <div class="section">
-                <h2>النشرة البريدية </h2>
-                <div class="letter">
-                    <form>
-                        <input type="text" placeholder="الرجاء ادخال الاسم" />
-                        <input type="email" placeholder="الرجال ادخال البريد" />
-                        <input type="button" value="زر ارسال البيانات" />
-                    </form>
-                </div>
-
-            </div>
-        </div>
-
-
-        <hr class="hr-footer"/>
-        <div class="copyright">
-            كافة الحقوق محفوظة لصالح شرك بريميوم كارز
-        </div>
-
-
-    </div>
-                                <!-- Footer Section Ends -->
-
-    <script src="myFunctions.js"></script>
-
-</body>
-</html>
+});
