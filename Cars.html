@@ -235,21 +235,14 @@
 
             <div class="form-group">
                 <label for="national-id">الرقم الوطني (11 خانة، يبدأ من 01 إلى 14):</label>
-                <input type="tel" id="national-id" maxlength="11" placeholder="مثال: 08123456789" unputmode="numeric" lang="en-us" dir="rtl" />
+                <input type="tel" id="national-id" maxlength="11" placeholder="مثال: 08123456789" inputmode="numeric" lang="en-us" dir="rtl" />
                 <small id="nid-error" class="error-msg">الرقم الوطني غير صالح (يجب أن يكون 11 خانة ويبدأ بمحافظة من 01
                     إلى 14).</small>
             </div>
 
-            <div class="form-group">
-                <label for="start-date">تاريخ بداية التأجير:</label>
-                <input type="date" id="start-date" lang="en-us"/>
-                <small id="date-error" class="error-msg">تاريخ النهاية يجب ان يكون لاحقاً لتاريخ البداية.</small>
-            </div>
-
-            <div class="form-group">
-                <label for="end-date">تاريخ نهاية التأجير:</label>
-                <input type="date" id="end-date" lang="en-us"/>
-            </div>
+                <div id="selected-cars-dates-container" class="form-group">
+                    <div id="cars-dates-list"></div>
+                </div>
 
             <div class="form-group">
                 <label for="phone-number">رقم الموبايل (يطابق شبكتي MTN أو Syriatel):</label>
