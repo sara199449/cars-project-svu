@@ -1044,9 +1044,6 @@ input[name="car-select"] {
     margin-top: 4px;
 }
 
-
-
-
 @media(max-width:768px) {
 
     .table {
@@ -1169,6 +1166,10 @@ input[name="car-select"] {
     color: rgb(255, 255, 255);
     font-family: almarai;
 
+}
+
+#selected-cars-dates-container {
+    display: none;
 }
 
 .booking-section .form-group input {
